@@ -1,0 +1,132 @@
+#!/bin/bash
+
+### HELP STUFF ###
+
+prog_name=$(basename $0)
+
+ask_confirm() {
+    # ask for confirm with message
+    answer=""
+    # loop until a real answer is given
+    while [ true ]; do
+        read -p "Enter [yes/no]: " answer
+        if [ "$answer" == "yes" ]; then
+            return 0
+        elif [ "$answer" == "no" ]; then
+            return 1
+        else
+            echo "Please answer with yes or no."
+        fi
+    done
+}
+
+### SUBCOMMAND profiles ###
+
+PROFILES_DIR="$HOME/.brawlhalla/profiles"
+ACTIVE_PROFILE_DIR="/mnt/c/Users/mauri/AppData/Roaming/BrawlhallaAir/Local Store"
+
+sub_profiles_list() {
+    for file in "$PROFILES_DIR"/*; do
+        if [ -d "$file" ]; then
+            echo $(basename "$file")
+        fi
+    done
+}
+
+sub_profiles_save() {
+    save_name="$1"
+    selected_profile_dir="$PROFILES_DIR/$save_name"
+    if [ -d "$selected_profile_dir" ]; then
+        echo "Profile $save_name already exists. Do you want to overwrite the existing profile?"
+        if ! ask_confirm; then
+            echo "Did not save profile."
+            return
+        fi
+    fi
+    mkdir -p "$selected_profile_dir"
+    rm -rf --preserve-root "$selected_profile_dir"/* 2>/dev/null
+    cp -rf "$ACTIVE_PROFILE_DIR/"* "$selected_profile_dir" >/dev/null
+    echo "Saved active profile to $save_name."
+}
+
+sub_profiles_load() {
+    save_name="$1"
+    selected_profile_dir="$PROFILES_DIR/$save_name"
+    if ! [ -d "$selected_profile_dir" ]; then
+        echo "Profile $save_name does not exist."
+        return
+    fi
+    cp -rf "$selected_profile_dir"/* "$ACTIVE_PROFILE_DIR" >/dev/null
+    echo "Profile $save_name is now active."
+}
+
+sub_profiles_delete() {
+    save_name="$1"
+    selected_profile_dir="$PROFILES_DIR/$save_name"
+    if ! [ -d "$selected_profile_dir" ]; then
+        echo "Profile $save_name does not exist."
+        return
+    fi
+    echo "Are you sure you want to delete profile $save_name?"
+    if ! ask_confirm; then
+        echo "Did not delete profile."
+        return
+    fi
+    rm -rf "$selected_profile_dir"
+    echo "Profile $save_name was deleted."
+}
+
+sub_profiles_help() {
+    echo "Usage: $prog_name profiles <subcommand>"
+    echo ""
+    echo "Subcommands:"
+    echo "list"
+    echo "save <save_name>"
+    echo "load <profile>"
+    echo "delete <profile>"
+    echo ""
+}
+
+sub_profiles() {
+    subcommand="$1"
+    case "$subcommand" in
+        "" | "-h" | "--help")
+            sub_profiles_help
+            ;;
+        "list" | "save" | "load" | "delete")
+            shift
+            sub_profiles_${subcommand} "$@"
+            ;;
+        *)
+            echo "Error: '$subcommand' is not a known subcommand." >&2
+            echo "Run '$prog_name --help' for a list of known subcommands." >&2
+            exit 1
+            ;;
+    esac
+}
+
+### MAIN ###
+
+sub_help() {
+    echo "Usage: $prog_name <subcommand>"
+    echo ""
+    echo "Subcommands:"
+    echo "profiles"
+    echo ""
+}
+
+subcommand="$1"
+case "$subcommand" in
+    "" | "-h" | "--help")
+        sub_help
+        ;;
+    "profiles")
+        shift
+        sub_${subcommand} "$@"
+        ;;
+    *)
+        echo "Error: '$subcommand' is not a known subcommand." >&2
+        echo "Run '$prog_name --help' for a list of known subcommands." >&2
+        exit 1
+        ;;
+esac
