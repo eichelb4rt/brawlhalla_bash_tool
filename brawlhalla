@@ -2,14 +2,14 @@
 
 ### HELP STUFF ###
 
-prog_name=$(basename $0)
+prog_name=$(basename "$0")
 
 ask_confirm() {
     # ask for confirm with message
     answer=""
     # loop until a real answer is given
-    while [ true ]; do
-        read -p "Enter [yes/no]: " answer
+    while true; do
+        read -r -p "Enter [yes/no]: " answer
         if [ "$answer" == "yes" ]; then
             return 0
         elif [ "$answer" == "no" ]; then
@@ -23,12 +23,12 @@ ask_confirm() {
 ### SUBCOMMAND profiles ###
 
 PROFILES_DIR="$HOME/.brawlhalla/profiles"
-ACTIVE_PROFILE_DIR="/mnt/c/Users/mauri/AppData/Roaming/BrawlhallaAir/Local Store"
+ACTIVE_PROFILE_DIR="$(wslpath "$(wslvar APPDATA)")/BrawlhallaAir/Local Store/"
 
 sub_profiles_list() {
     for file in "$PROFILES_DIR"/*; do
         if [ -d "$file" ]; then
-            echo $(basename "$file")
+            echo "$(basename "$file")"
         fi
     done
 }
@@ -44,7 +44,7 @@ sub_profiles_save() {
         fi
     fi
     mkdir -p "$selected_profile_dir"
-    rm -rf --preserve-root "$selected_profile_dir"/* 2>/dev/null
+    rm -rf --preserve-root "${selected_profile_dir:?}"/* 2>/dev/null
     cp -rf "$ACTIVE_PROFILE_DIR/"* "$selected_profile_dir" >/dev/null
     echo "Saved active profile to $save_name."
 }
@@ -95,7 +95,7 @@ sub_profiles() {
             ;;
         "list" | "save" | "load" | "delete")
             shift
-            sub_profiles_${subcommand} "$@"
+            sub_profiles_"${subcommand}" "$@"
             ;;
         *)
             echo "Error: '$subcommand' is not a known subcommand." >&2
@@ -122,7 +122,7 @@ case "$subcommand" in
         ;;
     "profiles")
         shift
-        sub_${subcommand} "$@"
+        sub_"${subcommand}" "$@"
         ;;
     *)
         echo "Error: '$subcommand' is not a known subcommand." >&2
