@@ -6,6 +6,14 @@ Bash automisation tool for Brawlhalla stuff. Currently supports switching skin p
 
 Just run `./update.sh`. This should also be run whenever you want to update this script.
 
+### Preliminaries
+
+You might need to install basic wsl stuff:
+
+```text
+sudo apt install wslu
+```
+
 Also, you need might need to add this to your `~/.profile`:
 
 ```text
