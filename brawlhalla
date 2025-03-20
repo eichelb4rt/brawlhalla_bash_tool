@@ -90,18 +90,61 @@ sub_profiles_help() {
 sub_profiles() {
     subcommand="$1"
     case "$subcommand" in
-        "" | "-h" | "--help")
-            sub_profiles_help
-            ;;
-        "list" | "save" | "load" | "delete")
-            shift
-            sub_profiles_"${subcommand}" "$@"
-            ;;
-        *)
-            echo "Error: '$subcommand' is not a known subcommand." >&2
-            echo "Run '$prog_name --help' for a list of known subcommands." >&2
-            exit 1
-            ;;
+    "" | "-h" | "--help")
+        sub_profiles_help
+        ;;
+    "list" | "save" | "load" | "delete")
+        shift
+        sub_profiles_"${subcommand}" "$@"
+        ;;
+    *)
+        echo "Error: '$subcommand' is not a known subcommand." >&2
+        echo "Run '$prog_name --help' for a list of known subcommands." >&2
+        exit 1
+        ;;
+    esac
+}
+
+### SUBCOMMAND track ###
+
+TRACK_DIR="$HOME/.brawlhalla/tracking"
+TRACK_RANDOM_FILE="$HOME/.brawlhalla/tracking/random.txt"
+ALL_LEGENDS="bodvar;cassidy;orion;lord_vraxx;gnash;queen_nai;hattori;sir_roland;scarlet;thatch;ada;sentinel;lucien;teros;brynn;asuri;barraza;ember;azoth;koji;ulgrim;diana;jhala;kor;wu_shang;val;ragnir;cross;mirage;nix;mordex;yumiko;artemis;caspian;sidra;xull;kaya;isaiah;jiro;lin_fei;zariel;rayman;dusk;fait;thor;petra;vector;volkov;onyx;jaeyun;mako;magyar;reno;munin;arcadia;ezio;tezca;thea;red_raptor;loki;seven;vivi;imugi;king_zuva;priya"
+
+sub_track_random() {
+    legend_name="$1"
+    if [[ $ALL_LEGENDS != *"$legend_name"* ]]; then
+        echo "Error: '$legend_name' is not a valid legend name." >&2
+        exit 1
+    fi
+    mkdir -p "$TRACK_DIR"
+    echo "$legend_name" >>"$TRACK_RANDOM_FILE"
+    echo "Tracked random legend $legend_name."
+}
+
+sub_track_help() {
+    echo "Usage: $prog_name track <subcommand>"
+    echo ""
+    echo "Subcommands:"
+    echo "random <legend_name>"
+    echo ""
+}
+
+sub_track() {
+    subcommand="$1"
+    case "$subcommand" in
+    "" | "-h" | "--help")
+        sub_track_help
+        ;;
+    "random")
+        shift
+        sub_track_"${subcommand}" "$@"
+        ;;
+    *)
+        echo "Error: '$subcommand' is not a known subcommand." >&2
+        echo "Run '$prog_name --help' for a list of known subcommands." >&2
+        exit 1
+        ;;
     esac
 }
 
@@ -112,21 +155,26 @@ sub_help() {
     echo ""
     echo "Subcommands:"
     echo "profiles"
+    echo "track"
     echo ""
 }
 
 subcommand="$1"
 case "$subcommand" in
-    "" | "-h" | "--help")
-        sub_help
-        ;;
-    "profiles")
-        shift
-        sub_"${subcommand}" "$@"
-        ;;
-    *)
-        echo "Error: '$subcommand' is not a known subcommand." >&2
-        echo "Run '$prog_name --help' for a list of known subcommands." >&2
-        exit 1
-        ;;
+"" | "-h" | "--help")
+    sub_help
+    ;;
+"profiles")
+    shift
+    sub_"${subcommand}" "$@"
+    ;;
+"track")
+    shift
+    sub_"${subcommand}" "$@"
+    ;;
+*)
+    echo "Error: '$subcommand' is not a known subcommand." >&2
+    echo "Run '$prog_name --help' for a list of known subcommands." >&2
+    exit 1
+    ;;
 esac
