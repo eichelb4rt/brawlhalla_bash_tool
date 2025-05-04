@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+ALL_WEAPONS="sword katars blasters bow gauntlets scythe hammer greatsword spear orb axe lance chakram"
 ALL_LEGENDS="bodvar cassidy orion lord_vraxx gnash queen_nai hattori sir_roland scarlet thatch ada sentinel lucien teros brynn asuri barraza ember azoth koji ulgrim diana jhala kor wu_shang val ragnir cross mirage nix mordex yumiko artemis caspian sidra xull kaya isaiah jiro lin_fei zariel rayman dusk fait thor petra vector volkov onyx jaeyun mako magyar reno munin arcadia ezio tezca thea red_raptor loki seven vivi imugi king_zuva priya"
 
 _brawlhalla_completions() {
@@ -13,7 +14,7 @@ _brawlhalla_completions() {
     if [ "$WORD_COUNT" == "2" ]; then
         # choose sub commands
         # (brawlhalla pr -> brawlhalla profiles)
-        complete_options="profiles track"
+        complete_options="profiles track find"
     elif [ "$WORD_COUNT" == "3" ]; then
         # choose sub sub commands
         # (brawlhalla profiles sa -> brawlhalla profiles save)
@@ -23,6 +24,9 @@ _brawlhalla_completions() {
         elif [ "$SUB_COMMAND" == "track" ]; then
             # sub commands in track
             complete_options="random"
+        elif [ "$SUB_COMMAND" == "find" ]; then
+            # sub commands in find, autocomplete to all weapons
+            complete_options=$ALL_WEAPONS
         fi
     elif [ "$WORD_COUNT" == "4" ]; then
         # choose sub sub command arguments
@@ -44,6 +48,10 @@ _brawlhalla_completions() {
                 # autocomplete to all legends
                 complete_options=$ALL_LEGENDS
             fi
+        elif [ "$SUB_COMMAND" == "find" ]; then
+            # autocomplete to all weapon 2 possibilities
+            # (brawlhalla find sword -> brawlhalla find sword katars)
+            complete_options=$ALL_WEAPONS
         fi
     fi
 
