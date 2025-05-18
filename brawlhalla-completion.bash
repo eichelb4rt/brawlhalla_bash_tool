@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-ALL_WEAPONS="sword katars blasters bow gauntlets scythe hammer greatsword spear orb axe lance chakram boots"
+ALL_WEAPONS="sword katars blasters bow gauntlets scythe hammer greatsword spear orb axe lance chakram boots cannon"
 ALL_LEGENDS="bodvar cassidy orion lord_vraxx gnash queen_nai hattori sir_roland scarlet thatch ada sentinel lucien teros brynn asuri barraza ember azoth koji ulgrim diana jhala kor wu_shang val ragnir cross mirage nix mordex yumiko artemis caspian sidra xull kaya isaiah jiro lin_fei zariel rayman dusk fait thor petra vector volkov onyx jaeyun mako magyar reno munin arcadia ezio tezca thea red_raptor loki seven vivi imugi king_zuva priya"
 
 _brawlhalla_completions() {
